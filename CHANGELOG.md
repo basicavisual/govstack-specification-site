@@ -4,6 +4,8 @@ All notable changes to the GovStack specification renderer are recorded here. Th
 
 ## Unreleased
 
+## 0.2.0 - 2026-11-24
+
 This release renders the Specification Framework changes proposed for the Architecture Working Group meeting of 25 November 2026: conformance profiles (ARCH-ADR-7), options and conditional requirements (ARCH-ADR-6) and the removal of the `observability` classifier (ARCH-ADR-8). The Wallet Building Block 2.0 draft is the first specification to use all three. Specifications that still use `requirements/` render as before, with warnings, so that Building Blocks can migrate one at a time.
 
 ### Added
@@ -49,12 +51,14 @@ This release renders the Specification Framework changes proposed for the Archit
 - Publishing several Building Blocks:
   - [`publish/building-blocks.yml`](publish/building-blocks.yml) lists the Building Blocks to publish: Wallet (`feat/v2.0`) and Document Management (`v0.6`).
   - [`scripts/publish.mjs`](scripts/publish.mjs) (`npm run publish`) fetches each source at its ref, or uses local checkouts with `--sources`. It builds and checks each one under `<base>bb/<id>/`, and writes a landing page that names the commit each was built from.
-  - [`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests and the publish command on every push to `main`, on demand, and daily. It deploys the result to GitHub Pages at `https://basicavisual.github.io/govstack-specification-site/`.
+  - [`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests and the publish command on every push to `main`, daily, and when started by hand. It deploys the result to GitHub Pages at `https://basicavisual.github.io/govstack-specification-site/`. Building Block repositories do not trigger it.
 - Tests: [`tests/conformance-profiles.test.mjs`](tests/conformance-profiles.test.mjs) covers profiles, options, conditions, verification, folder entries, YAML pages, root paths and decision records with an abstract Building Block. [`tests/publish.test.mjs`](tests/publish.test.mjs) covers the publish list and landing page.
 - README sections on conformance profiles, options and verification, and on publishing several Building Blocks.
+- [`RELEASE_NOTES.md`](RELEASE_NOTES.md), with the steps for releasing a version of the renderer and the actions each kind of user takes when moving to it.
 
 ### Changed
 
+- Version 0.2.0, up from 0.1.0.
 - A local link or image path starting with `/` resolves against the specification's root and is published under the build base. For example, `/assets/cover.svg` built with `--base /bb/wallet/` becomes `/bb/wallet/assets/cover.svg`. A path that escapes the root fails. Previously such paths were left unchanged and their targets were not published.
 - `observability` is shown only for requirements without an `interaction`, as in the cross-functional requirements. Where both are set, a warning says that `observability` is no longer read, and names both values when they disagree.
 - Conditions are labelled *Applies when*, *Applies when any of* and *Applies when all of*, instead of *Any of* and *All of*.
@@ -70,3 +74,7 @@ This release renders the Specification Framework changes proposed for the Archit
 - An empty `documentation:` field no longer renders the text "null".
 - A functionality description written as a YAML block scalar no longer ends with a stray line break.
 - A `contract` or `test` given as a URN, such as `govstack:spec:bb:information-mediator`, is shown as written instead of becoming a broken local link. A web URL links as written. This fixes the Document Management build.
+
+## 0.1.0
+
+First version: the shared Astro/Starlight renderer with the `api-guide` and `framework` profiles, native Scalar OpenAPI references, built-output and HTTP checks, and the composite build action.

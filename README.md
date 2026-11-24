@@ -113,7 +113,7 @@ npm run publish -- --sources .. --output /absolute/path/to/site --base /
 python3 -m http.server 4336 --directory /absolute/path/to/site
 ```
 
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests and the same command on every push to `main`, on demand, and daily, and deploys the result to GitHub Pages. For this repository that is `https://basicavisual.github.io/govstack-specification-site/bb/<id>/`. The base is `/<repository>/`, or `/` for a `<owner>.github.io` repository. Builds are marked unofficial. Before the first run, set **Settings → Pages → Source** to **GitHub Actions**. To add a Building Block, add it to the list; its repository must be public.
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests and the same command on every push to `main`, daily at 04:17 UTC, and when started by hand from the Actions tab (**Run workflow**). It then deploys the result to GitHub Pages. Building Block repositories do not trigger it: a new commit there reaches the site at the next daily run. To publish it sooner, run the workflow by hand. For this repository that is `https://basicavisual.github.io/govstack-specification-site/bb/<id>/`. The base is `/<repository>/`, or `/` for a `<owner>.github.io` repository. Builds are marked unofficial. Before the first run, set **Settings → Pages → Source** to **GitHub Actions**. To add a Building Block, add it to the list; its repository must be public.
 
 ## Unofficial deployments
 

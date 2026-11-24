@@ -3,12 +3,13 @@ name: Publish specifications to GitHub Pages
 # deploys them as one site: <pages root>/bb/<id>/, with a landing page at the root.
 # Every build runs the renderer's built-output and HTTP checks; one failure stops
 # the deploy, so the published site keeps its previous version.
+# It is not triggered by the Building Block repositories: a change there reaches the site at the
+# next daily run, or sooner by running this workflow by hand (Actions → Run workflow).
 on:
   push:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Building Block repositories change independently of this one.
     - cron: '17 4 * * *'
 permissions:
   contents: read
