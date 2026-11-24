@@ -30,11 +30,11 @@ This file says what a developer does when the renderer's version goes up: the st
    ```sh
    git commit -m "chore: release <x.y.z>"
    git tag -a v<x.y.z> -m "Release <x.y.z>"
-   git push ali <branch> v<x.y.z>
+   git push <remote> <branch> v<x.y.z>
    ```
 
-   Push to the `ali` remote (`basicavisual/govstack-specification-site`), not `origin`.
-7. **Publish the site.** Merging into `main` runs the Pages workflow and deploys the release. Check that the run in the **Actions** tab succeeded.
+   Push to the repository you publish the renderer from.
+7. **Publish the site.** Where `PUBLISH_PAGES` is set, merging into `main` runs the Pages workflow and deploys the release. Check that the run in the **Actions** tab succeeded.
 8. **Tell consumers** the full commit of the release, which they pin as `GOVSTACK_SITE_RENDERER_REF`, and point them to this file.
 
 ***
@@ -100,7 +100,7 @@ After building, read `warnings` in `.generated/framework-*/publication.json`. It
 
 These steps apply to CI that pins the renderer or uses `action.yml`:
 
-- **Pin the new commit.** Set `GOVSTACK_SITE_RENDERER_REF` to the full commit of the 0.2.0 release, in `basicavisual/govstack-specification-site`. The action's inputs are unchanged.
+- **Pin the new commit.** Set `GOVSTACK_SITE_RENDERER_REF` to the full commit of the 0.2.0 release in the renderer repository you use. The action's inputs are unchanged.
 - **Update anything that reads the build manifest (`publication.json`):**
   - `requirementCount` now includes options;
   - `profiles` lists the conformance profiles;
@@ -114,8 +114,9 @@ These steps apply to CI that pins the renderer or uses `action.yml`:
 ### Pages publishers
 
 - **Enable GitHub Actions once.** On a fork they start disabled: open the **Actions** tab and enable workflows.
+- **Opt in to deploying:** in **Settings → Secrets and variables → Actions → Variables**, set the repository variable `PUBLISH_PAGES` to `true`. Without it, the workflow builds and checks on pushes but never deploys, and skips the daily run.
 - **Set the Pages source:** in **Settings → Pages**, set **Source** to **GitHub Actions**.
 - **List the Building Blocks** in `publish/building-blocks.yml`. Each needs an `id`, `title`, `repository` and `ref`, and its repository must be public. A Building Block that fails its checks stops the whole deploy.
-- **When it runs.** The workflow runs on every push to `main` and daily at 04:17 UTC, and publishes at `https://basicavisual.github.io/govstack-specification-site/bb/<id>/`, marked as an unofficial preview.
+- **When it runs.** The workflow runs on every push to `main` and daily at 04:17 UTC, and publishes at `https://<owner>.github.io/<repository>/bb/<id>/`, marked as an unofficial preview.
 - **Publishing a Building Block change sooner.** Building Block repositories do not trigger the workflow, so their changes otherwise wait for the next daily run. To publish one sooner, go to **Actions → Publish specifications to GitHub Pages → Run workflow** on `main`.
 - **Re-enabling the schedule.** GitHub disables a scheduled workflow after 60 days without activity in this repository. If that happens, re-enable it from the **Actions** tab.

@@ -3,6 +3,8 @@ name: Publish specifications to GitHub Pages
 # deploys them as one site: <pages root>/bb/<id>/, with a landing page at the root.
 # Every build runs the renderer's built-output and HTTP checks; one failure stops
 # the deploy, so the published site keeps its previous version.
+# Deploying is opt-in: set the repository variable PUBLISH_PAGES to true. Without it,
+# pushes and manual runs still build and check, and the daily run is skipped.
 # It is not triggered by the Building Block repositories: a change there reaches the site at the
 # next daily run, or sooner by running this workflow by hand (Actions → Run workflow).
 on:
@@ -18,6 +20,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
+    if: github.event_name != 'schedule' || vars.PUBLISH_PAGES == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -45,7 +48,7 @@ jobs:
         with:
           path: ${{ runner.temp }}/site
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && vars.PUBLISH_PAGES == 'true'
     needs: build
     runs-on: ubuntu-latest
     permissions:

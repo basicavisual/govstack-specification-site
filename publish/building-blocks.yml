@@ -1,7 +1,7 @@
 # Building Blocks published to GitHub Pages by .github/workflows/pages.yml.
 #
 # Each entry is built from its repository at `ref` and served at
-#   https://basicavisual.github.io/govstack-specification-site/bb/<id>/
+#   https://<owner>.github.io/<repository>/bb/<id>/
 #
 #   id:          folder name under /bb/; lowercase kebab-case, never reused
 #   title:       name on the landing page
