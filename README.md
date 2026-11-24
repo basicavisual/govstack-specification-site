@@ -18,6 +18,20 @@ Every profile requires an explicit source, either `--source` or the
 `DOCS_SOURCE_ROOT` environment variable. There is no default, so a build cannot
 silently pick up a different or dirty checkout.
 
+## Conformance profiles, options and verification
+
+Framework sources can use the layout of the Specification Framework's ARCH-ADR-7, ARCH-ADR-6 and ARCH-ADR-8. Sources that still use `requirements/` render as before, with warnings, so Building Blocks can migrate one at a time.
+
+- **Conformance profiles (ARCH-ADR-7).** `toc.yml` lists `conformance-profiles` as one subsection per profile folder, with `introduction.md` first. The pages of a subsection resolve relative to that folder. Each introduction is served at the folder's route (`/conformance-profiles/<id>/`), because the folder name is the profile id. Its front matter (`type`, `description`, `requires`, `role`, `reference_architecture`) becomes a summary above the page. Functionality pages name their profile, the home page lists the profiles, and the sidebar groups each profile with a Core or Extension badge. Generation fails unless there is exactly one `CORE`, `requires` names only extension profiles without cycles, and the core requires nothing. A functionality missing from its introduction's links, `conformance` and `extension` fields, and `metadata.yml` `extensions` produce warnings and are ignored.
+- **Options and conditions (ARCH-ADR-6).** Options listed under a variation point's `options` render as cards nested beneath it, with `select`, `key`, `extension` (linked to the profile that meets the option), `presented_by`, `applies_when` and `applies_when_all`. A generated *Options and conditions* page lists, for every option key and every extension profile used in a condition, the requirements that apply when it holds. Conditions link to it. Options count towards the requirement total. Structural rules (at least two options, `select.min`, `n.m` ids, no `interaction` on a variation point, the core meeting `min` without extensions) are reported as warnings.
+- **Verification (ARCH-ADR-8).** With an `interaction`, a card shows how the requirement is verified: tested at that boundary, or audited against evidence for `INTERNAL`. `observability` is then not shown, and a value that disagrees is reported. Without an `interaction`, as in the cross-functional requirements, `observability` is shown as before.
+
+A local link or image path that starts with `/` resolves against the specification's root, and is published under the build's `--base`. With `--base /bb/wallet/`, `/assets/cover.svg` becomes `/bb/wallet/assets/cover.svg`, so a specification only ever refers to its own assets. A path that escapes the root fails.
+
+Decision records are not part of `toc.yml` yet. A Markdown page under `ADR/` that a published page links to is published as if it were listed under `resources`, with a warning, and its own links to other decision records are followed. Unlinked records are not published, and a link to any other unlisted Markdown page still fails.
+
+`toc.yml` entries ending in `/` publish that folder's files with a download index, relative to their section, and fail if the folder does not exist. `terminology.yml` (`terms` with `term`/`definition`, or `entry` with `designation`/`description`) and `references.yml` render as pages, with one heading per term. Any other YAML page is shown verbatim.
+
 ## OpenAPI references
 
 Framework sources can opt into Scalar references with `api-references.yml`:
