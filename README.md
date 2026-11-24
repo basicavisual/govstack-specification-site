@@ -90,9 +90,30 @@ works as follows:
 npm run check -- --profile api-guide --source /absolute/path/to/api-design-guide --base /api-guide/ --output /absolute/path/to/scratch-output
 ```
 
-All previews bind to loopback. No deployment or publication command is included.
+All previews bind to loopback. `npm run publish` builds several specifications into one site; see [Publishing several Building Blocks](#publishing-several-building-blocks).
 `dev` generates source content once; regenerate after editing the authoritative
 input. Use a static build plus `preview` to verify the Pagefind search index.
+
+## Publishing several Building Blocks
+
+[`publish/building-blocks.yml`](publish/building-blocks.yml) lists the Building Blocks to publish, each with an `id`, `title`, `repository` (`owner/name` on GitHub), `ref` (branch, tag or commit) and an optional `description`. `npm run publish` builds them into one static site:
+
+```text
+<output>/index.html     landing page listing the Building Blocks and the commit each was built from
+<output>/bb/<id>/       one specification site per Building Block, built with the base <base>bb/<id>/
+```
+
+Every Building Block is built and then checked as in `build` and `test-served`. Any failure stops the run. Root paths in a specification resolve under its own `bb/<id>/` folder.
+
+```sh
+# Fetch each source at its ref, as CI does (checkouts go to .generated/publish-sources by default)
+npm run publish -- --output /absolute/path/to/site --base / --unofficial
+# Or build from local checkouts named after each repository, such as ../bb-wallet
+npm run publish -- --sources .. --output /absolute/path/to/site --base /
+python3 -m http.server 4336 --directory /absolute/path/to/site
+```
+
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests and the same command on every push to `main`, on demand, and daily, and deploys the result to GitHub Pages. For this repository that is `https://basicavisual.github.io/govstack-specification-site/bb/<id>/`. The base is `/<repository>/`, or `/` for a `<owner>.github.io` repository. Builds are marked unofficial. Before the first run, set **Settings → Pages → Source** to **GitHub Actions**. To add a Building Block, add it to the list; its repository must be public.
 
 ## Unofficial deployments
 
